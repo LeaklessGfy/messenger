@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import ChatMessage from '../../../entities/ChatMessage';
 import { fetchChatMessages } from '../../../services/api';
+import { useAuth } from '../../../services/auth';
 
 import Message from './components/Message';
 import Send from './components/Send';
@@ -14,13 +15,18 @@ const useStyles = makeStyles({
     listStyle: 'none'
   },
   li: {
-    marginTop: '5px'
+    marginTop: '5px',
+    display: 'flex',
+  },
+  liOwned: {
+    justifyContent: 'flex-end'
   }
 });
 
 const Messages: React.FC = () => {
   const { uri } = useParams();
   const [ messages, setMessages ] = useState<ChatMessage[]>([]);
+  const { userId } = useAuth();
   const classes = useStyles();
 
   useEffect(() => {
@@ -36,7 +42,7 @@ const Messages: React.FC = () => {
     <React.Fragment>
       <ul className={classes.ul}>
         {messages.map(message => (
-          <li key={message.id} className={classes.li}>
+          <li key={message.id} className={classes.li + ' ' + (message.owner === userId ? classes.liOwned : '')}>
             <Message message={message} />
           </li>
         ))}
