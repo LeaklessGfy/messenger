@@ -35,7 +35,7 @@ const Chat: React.FC = () => {
             <Rooms />
           </div>
         </Grid>
-        <Grid item sm={10}>
+        <Grid item sm={10} className={classes.item}>
           <Messages />
         </Grid>
       </Grid>

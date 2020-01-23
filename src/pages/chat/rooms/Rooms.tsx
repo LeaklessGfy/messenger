@@ -8,11 +8,11 @@ import { fetchChatRooms } from '../../../services/api';
 import Room from './components/Room';
 
 const Rooms: React.FC = () => {
-  const [ chatRooms, setChatRooms ] = useState<ChatRoom[]>([]);
+  const [ rooms, setRooms ] = useState<ChatRoom[]>([]);
 
   useEffect(() => {
     fetchChatRooms()
-    .then(chatRooms => setChatRooms(chatRooms));
+    .then(rooms => setRooms(rooms));
   });
 
   return (
@@ -25,7 +25,7 @@ const Rooms: React.FC = () => {
         </ListSubheader>
       }
     >
-      <Room chatRoom={{
+      <Room room={{
         id: 0,
         uri: 'general',
         name: 'Général',
@@ -33,7 +33,7 @@ const Rooms: React.FC = () => {
         image: ''
       }} />
 
-      {chatRooms.map(chatRoom => <Room chatRoom={chatRoom} />)}
+      {rooms.map(room => <Room key={room.id} room={room} />)}
     </List>
   );
 }
