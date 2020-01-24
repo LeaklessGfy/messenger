@@ -43,7 +43,7 @@ const Messages: React.FC = () => {
       <ul className={classes.ul}>
         {messages.map(message => (
           <li key={message.id} className={classes.li + ' ' + (message.owner === userId ? classes.liOwned : '')}>
-            <Message message={message} />
+            <Message message={message} isOwned={message.owner === userId} />
           </li>
         ))}
       </ul>

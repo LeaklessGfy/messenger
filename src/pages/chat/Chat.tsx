@@ -6,10 +6,11 @@ import Grid from '@material-ui/core/Grid';
 import Rooms from './rooms/Rooms';
 import Messages from './messages/Messages';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    height: '100%'
+    height: '100%',
+    background: 'white'
   },
   container: {
     height: '100%'
@@ -19,10 +20,10 @@ const useStyles = makeStyles(theme => ({
     height: '100%'
   },
   channels: {
-    borderRight: '1px solid black',
+    borderRight: '1px solid #f5f5f5',
     height: '100%'
   },
-}));
+});
 
 const Chat: React.FC = () => {
   const classes = useStyles();

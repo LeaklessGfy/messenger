@@ -9,7 +9,18 @@ import ChatMessage from '../../../../entities/ChatMessage';
 
 const useStyles = makeStyles({
   card: {
-    maxWidth: '500px'
+    maxWidth: '500px',
+    fontWeight: 'bold',
+    '&:hover': {
+      backgroundColor: 'grey'
+    }
+  },
+  cardOwned: {
+    backgroundColor: 'rgb(255, 0, 136)',
+    color: 'rgb(255, 255, 255)',
+    '&:hover': {
+      backgroundColor: 'rgb(255, 10, 100)'
+    }
   },
   cardContent: {
     padding: '5px 10px !important'
@@ -17,14 +28,15 @@ const useStyles = makeStyles({
 });
 
 interface MessageProps {
-  message: ChatMessage
+  message: ChatMessage;
+  isOwned: boolean;
 }
 
 const Message: React.FC<MessageProps> = props => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card + ' ' + (props.isOwned ? classes.cardOwned : '')}>
       <CardContent className={classes.cardContent}>
         <Typography variant="caption" component="p">
           {props.message.content}
