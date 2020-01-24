@@ -12,7 +12,8 @@ import Send from './components/Send';
 
 const useStyles = makeStyles({
   ul: {
-    listStyle: 'none'
+    listStyle: 'none',
+    padding: '0'
   },
   li: {
     marginTop: '5px',

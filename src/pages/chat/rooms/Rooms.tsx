@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import List from '@material-ui/core/List';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
 
 import ChatRoom from '../../../entities/ChatRoom';
 import { fetchChatRooms } from '../../../services/api';
@@ -32,6 +33,8 @@ const Rooms: React.FC = () => {
         date: new Date(),
         image: ''
       }} />
+
+      <Divider variant="middle" component="li" />
 
       {rooms.map(room => <Room key={room.id} room={room} />)}
     </List>
