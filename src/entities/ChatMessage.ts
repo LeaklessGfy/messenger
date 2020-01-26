@@ -1,9 +1,10 @@
-interface ChatMessage {
+export interface ChatMessage {
   id: number;
   owner: number;
-  receiver: number;
+  room: string;
   content: string;
   date: Date;
+  isPrivate: boolean;
 }
 
-export default ChatMessage;
+export type PartialChatMessage = Omit<ChatMessage, 'id' | 'owner' | 'room'>

@@ -4,12 +4,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
 
-import ChatMessage from '../../../../entities/ChatMessage';
+import { ChatMessage } from '../../../../entities/ChatMessage';
 
 const useStyles = makeStyles({
   card: {
     maxWidth: '500px',
+    height: 'fit-content',
+    marginLeft: '5px',
+    marginTop: '5px',
     '&:hover': {
       backgroundColor: 'grey'
     }
@@ -23,6 +27,9 @@ const useStyles = makeStyles({
   },
   cardContent: {
     padding: '5px 10px !important'
+  },
+  typoPrivate: {
+    fontStyle: 'italic'
   }
 });
 
@@ -35,13 +42,16 @@ const Message: React.FC<MessageProps> = props => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card + ' ' + (props.isOwned ? classes.cardOwned : '')}>
-      <CardContent className={classes.cardContent}>
-        <Typography variant="body2" component="p">
-          {props.message.content}
-        </Typography>
-      </CardContent>
-    </Card>
+    <>
+      {!props.isOwned ? <Avatar>K</Avatar> : null}
+      <Card className={classes.card + ' ' + (props.isOwned ? classes.cardOwned : '')}>
+        <CardContent className={classes.cardContent}>
+          <Typography variant="body2" component="p" className={props.message.isPrivate ? classes.typoPrivate : ''}>
+            {props.message.content}
+          </Typography>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 

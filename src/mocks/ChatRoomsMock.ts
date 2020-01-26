@@ -1,13 +1,18 @@
-import ChatRoom from "../entities/ChatRoom";
+import { ChatRoom } from "../entities/ChatRoom";
 
-const CHAT_ROOMS_MOCK: ChatRoom[] = [
+export const CHAT_ROOMS_MOCK: ChatRoom[] = [
   {
     id: 1,
-    uri: 'diane_marino',
-    name: 'Diane',
+    uri: 'all',
+    name: 'All',
+    date: new Date(),
+    image: ''
+  },
+  {
+    id: 2,
+    uri: 'kanye',
+    name: 'Kanye West',
     date: new Date(),
     image: ''
   }
 ];
-
-export default CHAT_ROOMS_MOCK;

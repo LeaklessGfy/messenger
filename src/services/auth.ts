@@ -1,5 +1,5 @@
 export function useAuth() {
   return {
-    userId: 2
+    userId: 1
   };
 }

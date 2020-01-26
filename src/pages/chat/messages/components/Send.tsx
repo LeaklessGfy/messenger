@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -8,21 +8,48 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 
+import { PartialChatMessage } from '../../../../entities/ChatMessage';
+
 const useStyles = makeStyles({
   send: {
-    position: 'fixed',
-    bottom: 0,
-    width: '83%'
+    position: 'absolute',
+    bottom: '10px',
+    width: 'calc(100% - 245px)'
   }
 });
 
-const Send: React.FC = () => {
+interface SendProps {
+  onSend: (message: PartialChatMessage) => void;
+}
+
+const Send: React.FC<SendProps> = props => {
   const classes = useStyles();
+  const [ content, setContent ] = useState('');
+  const [ isPrivate, setIsPrivate ] = useState(false);
+
+  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.keyCode === 13 && content.trim() !== '') {
+      onClick();
+    }
+  };
+
+  const onClick = () => {
+    props.onSend({
+      content,
+      date: new Date(),
+      isPrivate
+    });
+    setContent('');
+  };
 
   return (
     <TextField
       fullWidth
       className={classes.send}
+      variant="outlined"
+      value={content}
+      onChange={e => setContent(e.target.value)}
+      onKeyUp={onEnter}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
@@ -32,12 +59,13 @@ const Send: React.FC = () => {
         endAdornment: (
           <InputAdornment position="end">
             <Switch
-              checked={true}
+              checked={isPrivate}
               value="checkedA"
               title="Private message"
               inputProps={{ 'aria-label': 'secondary checkbox' }}
+              onClick={() => setIsPrivate(!isPrivate)}
             />
-            <IconButton title="Send">
+            <IconButton title="Send" onClick={onClick}>
               <SendIcon />
             </IconButton>
           </InputAdornment>

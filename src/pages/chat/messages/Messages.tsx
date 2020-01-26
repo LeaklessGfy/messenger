@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import ChatMessage from '../../../entities/ChatMessage';
-import { fetchChatMessages } from '../../../services/api';
+import { ChatMessage, PartialChatMessage } from '../../../entities/ChatMessage';
+import { fetchChatMessages, sendChatMessage } from '../../../services/api';
 import { useAuth } from '../../../services/auth';
 
 import Message from './components/Message';
@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
   li: {
     marginTop: '5px',
-    display: 'flex',
+    display: 'flex'
   },
   liOwned: {
     justifyContent: 'flex-end'
@@ -29,6 +29,20 @@ const Messages: React.FC = () => {
   const [ messages, setMessages ] = useState<ChatMessage[]>([]);
   const { userId } = useAuth();
   const classes = useStyles();
+  
+  const onSend = (partial: PartialChatMessage) => {
+    if (uri === undefined) return;
+
+    const message: ChatMessage = {
+      ...partial,
+      id: messages.length + 1,
+      owner: userId,
+      room: uri
+    };
+
+    sendChatMessage(message)
+    .then(messages => setMessages(messages));
+  };
 
   useEffect(() => {
     if (uri === undefined) {
@@ -37,10 +51,10 @@ const Messages: React.FC = () => {
 
     fetchChatMessages(uri)
     .then(messages => setMessages(messages));
-  });
+  }, [uri]);
 
   return (
-    <React.Fragment>
+    <>
       <ul className={classes.ul}>
         {messages.map(message => (
           <li key={message.id} className={classes.li + ' ' + (message.owner === userId ? classes.liOwned : '')}>
@@ -49,8 +63,8 @@ const Messages: React.FC = () => {
         ))}
       </ul>
 
-      <Send />
-    </React.Fragment>
+      <Send onSend={onSend} />
+    </>
   );
 }
 

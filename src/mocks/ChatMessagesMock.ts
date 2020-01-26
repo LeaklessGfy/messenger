@@ -1,20 +1,20 @@
-import ChatMessage from "../entities/ChatMessage";
+import { ChatMessage } from "../entities/ChatMessage";
 
-const CHAT_MESSAGES_MOCK: ChatMessage[] = [
+export const CHAT_MESSAGES_MOCK: ChatMessage[] = [
   {
     id: 1,
     owner: 1,
-    receiver: 2,
-    content: 'Salut',
-    date: new Date()
+    room: 'kanye',
+    content: 'Hi !',
+    date: new Date(),
+    isPrivate: false
   },
   {
     id: 2,
     owner: 2,
-    receiver: 1,
-    content: 'Hey ! Comment ça va ?',
-    date: new Date()
+    room: 'kanye',
+    content: 'Hi, how you doin?',
+    date: new Date(),
+    isPrivate: true
   }
-]
-
-export default CHAT_MESSAGES_MOCK;
+];
