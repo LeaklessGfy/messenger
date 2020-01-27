@@ -4,6 +4,32 @@ import { ChatMessage } from '../entities/ChatMessage';
 import { CHAT_ROOMS_MOCK } from '../mocks/ChatRoomsMock';
 import { CHAT_MESSAGES_MOCK } from '../mocks/ChatMessagesMock';
 
+function getMessagesFromLocal(uri: string): ChatMessage[] | null {
+  const localJson = localStorage.getItem(`messages/${uri}`);
+  if (localJson === null) return null;
+  return JSON.parse(localJson).map((message: ChatMessage) => ({
+    ...message,
+    date: new Date(message.date)
+  }));
+}
+
+export const fetchStubMessage = async (
+  id: number,
+  uri: string
+): Promise<ChatMessage> => {
+  const response = await fetch('https://api.kanye.rest');
+  const data = await response.json();
+
+  return {
+    id,
+    owner: 2,
+    room: uri,
+    content: data.quote,
+    date: new Date(),
+    isPrivate: false
+  };
+};
+
 export const fetchChatRooms = async (): Promise<ChatRoom[]> => {
   // await fetch('https://httpstat.us/200');
   return CHAT_ROOMS_MOCK;
@@ -13,43 +39,38 @@ export const fetchChatMessages = async (
   uri: string
 ): Promise<ChatMessage[]> => {
   // await fetch('');
-  const localJson = localStorage.getItem(`messages/${uri}`);
-  if (localJson === null) {
+  const messages = getMessagesFromLocal(uri);
+  if (messages === null) {
     const mocks = CHAT_MESSAGES_MOCK.filter(m => m.room === uri);
     localStorage.setItem(`messages/${uri}`, JSON.stringify(mocks));
     return mocks;
   }
-  return JSON.parse(localJson);
+  return messages;
 };
 
 export const sendChatMessage = async (
   chatMessage: ChatMessage
 ): Promise<ChatMessage[]> => {
-  const localJson = localStorage.getItem(`messages/${chatMessage.room}`);
-  let data = [];
-  if (localJson === null) {
-    data = [chatMessage];
+  let messages = getMessagesFromLocal(chatMessage.room);
+
+  if (messages === null) {
+    messages = [chatMessage];
   } else {
-    data = JSON.parse(localJson);
-    data.push(chatMessage);
+    messages.push(chatMessage);
   }
 
-  // fetchStubMessages
+  try {
+    const stub = await fetchStubMessage(messages.length + 1, chatMessage.room);
+    messages.push(stub);
+  } catch (e) {
+    // Only warn because stub isn't a main feature, just nice to have
+    console.warn('Unable to reach stub service');
+  }
 
-  localStorage.setItem(`messages/${chatMessage.room}`, JSON.stringify(data));
-  return data;
-};
+  localStorage.setItem(
+    `messages/${chatMessage.room}`,
+    JSON.stringify(messages)
+  );
 
-export const fetchStubMessage = async (): Promise<ChatMessage> => {
-  const response = await fetch('https://api.kanye.rest');
-  const data = await response.json();
-
-  return {
-    id: -1,
-    owner: 1,
-    room: 'diane',
-    content: data.quote,
-    date: new Date(),
-    isPrivate: false
-  };
+  return messages;
 };

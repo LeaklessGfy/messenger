@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Switch from '@material-ui/core/Switch';
@@ -11,20 +10,11 @@ import SendIcon from '@material-ui/icons/Send';
 
 import { PartialChatMessage } from '../../../../entities/ChatMessage';
 
-const useStyles = makeStyles({
-  send: {
-    position: 'absolute',
-    bottom: '10px',
-    width: 'calc(100% - 245px)'
-  }
-});
-
 interface SendProps {
   onSend: (message: PartialChatMessage) => void;
 }
 
 const Send: React.FC<SendProps> = ({ onSend }) => {
-  const classes = useStyles();
   const [content, setContent] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -46,7 +36,6 @@ const Send: React.FC<SendProps> = ({ onSend }) => {
   return (
     <TextField
       fullWidth
-      className={classes.send}
       variant="outlined"
       value={content}
       onChange={(e): void => setContent(e.target.value)}

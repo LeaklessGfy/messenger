@@ -32,7 +32,7 @@ const Rooms: React.FC<RoomsProps> = ({ rooms }) => {
     }
   };
 
-  useEffect(() => setVisibleRooms(rooms), []);
+  useEffect(() => setVisibleRooms(rooms), [rooms]);
 
   return (
     <List

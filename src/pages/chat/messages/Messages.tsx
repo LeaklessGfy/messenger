@@ -10,9 +10,15 @@ import Message from './components/Message';
 import Send from './components/Send';
 
 const useStyles = makeStyles({
+  section: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
+  },
   ul: {
     listStyle: 'none',
-    padding: '0'
+    padding: '0',
+    flexGrow: 1
   },
   li: {
     marginTop: '5px',
@@ -33,7 +39,7 @@ const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
   const classes = useStyles();
 
   return (
-    <>
+    <section className={classes.section}>
       <ul className={classes.ul}>
         {messages.map(message => (
           <li
@@ -50,7 +56,7 @@ const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
       </ul>
 
       <Send onSend={onSend} />
-    </>
+    </section>
   );
 };
 

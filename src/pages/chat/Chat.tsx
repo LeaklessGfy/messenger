@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -28,15 +28,15 @@ const DRAWER_WIDTH = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
-    height: '100%'
+    height: '100vh'
   },
   appBar: {
-    transition: 'margin sharp 1s'
+    transition: 'all 1s cubic-bezier(0.4, 0, 0.6, 1)'
   },
   appBarShift: {
     width: `calc(100% - ${DRAWER_WIDTH}px)`,
     marginLeft: DRAWER_WIDTH,
-    transition: 'margin easeOut 1s'
+    transition: 'all 1s cubic-bezier(0, 0, 0.2, 1)'
   },
   menuButton: {
     marginRight: 2
@@ -61,15 +61,14 @@ const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: 3,
-    transition: 'margin sharp 1s',
+    transition: 'margin-left 1s cubic-bezier(0.4, 0, 0.6, 1)',
     marginLeft: -DRAWER_WIDTH,
     marginTop: '70px',
     width: 'calc(100% - 240px)',
-    height: 'calc(100% - 140px)',
-    overflowY: 'scroll'
+    height: 'calc(100% - 70px)'
   },
   contentShift: {
-    transition: 'margin easeOut 1s',
+    transition: 'margin-left 1s cubic-bezier(0, 0, 0.2, 1)',
     marginLeft: 0
   }
 }));
@@ -79,7 +78,7 @@ const Chat: React.FC = () => {
   const [open, setOpen] = useState(true);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [userId, setUserId] = useState(1);
+  const { userId } = useContext(AuthContext);
   const { uri } = useParams();
 
   const onSend = (partial: PartialChatMessage): void => {
@@ -100,57 +99,56 @@ const Chat: React.FC = () => {
     if (uri !== undefined) {
       fetchChatMessages(uri).then(messages => setMessages(messages));
     }
-  }, []);
+  }, [uri]);
 
   return (
-    <AuthContext.Provider value={{ userId }}>
-      <div className={classes.root}>
-        <AppBar
-          position="fixed"
-          color="secondary"
-          className={classes.appBar + ' ' + (open ? classes.appBarShift : '')}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={(): void => setOpen(true)}
-              edge="start"
-              className={classes.menuButton + ' ' + (open ? classes.hide : '')}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              Chat
-            </Typography>
-          </Toolbar>
-        </AppBar>
+    <div className={classes.root}>
+      <AppBar
+        position="fixed"
+        color="secondary"
+        className={classes.appBar + ' ' + (open ? classes.appBarShift : '')}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={(): void => setOpen(true)}
+            edge="start"
+            className={classes.menuButton + ' ' + (open ? classes.hide : '')}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            Chat
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          open={open}
-          classes={{ paper: classes.drawerPaper }}
-        >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={(): void => setOpen(false)}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        transitionDuration={1000}
+        open={open}
+        classes={{ paper: classes.drawerPaper }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={(): void => setOpen(false)}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
 
-          <Divider />
+        <Divider />
 
-          <Rooms rooms={rooms} />
-        </Drawer>
+        <Rooms rooms={rooms} />
+      </Drawer>
 
-        <main
-          className={classes.content + ' ' + (open ? classes.contentShift : '')}
-        >
-          <Messages messages={messages} onSend={onSend} />
-        </main>
-      </div>
-    </AuthContext.Provider>
+      <main
+        className={classes.content + ' ' + (open ? classes.contentShift : '')}
+      >
+        <Messages messages={messages} onSend={onSend} />
+      </main>
+    </div>
   );
 };
 
