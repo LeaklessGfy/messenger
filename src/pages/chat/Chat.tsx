@@ -29,10 +29,10 @@ const useStyles = makeStyles(theme => ({
     transition: 'margin easeOut 1s'
   },
   menuButton: {
-    marginRight: 2,
+    marginRight: 2
   },
   hide: {
-    display: 'none',
+    display: 'none'
   },
   drawer: {
     width: DRAWER_WIDTH,
@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: '70px',
     width: 'calc(100% - 240px)',
     height: 'calc(100% - 140px)',
-    overflowY: 'scroll',
+    overflowY: 'scroll'
   },
   contentShift: {
     transition: 'margin easeOut 1s',
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
 
 const Chat: React.FC = () => {
   const classes = useStyles();
-  const [ open, setOpen ] = useState(true);
+  const [open, setOpen] = useState(true);
 
   return (
     <div className={classes.root}>
@@ -96,7 +96,7 @@ const Chat: React.FC = () => {
         variant="persistent"
         anchor="left"
         open={open}
-        classes={{paper: classes.drawerPaper}}
+        classes={{ paper: classes.drawerPaper }}
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={() => setOpen(false)}>
@@ -109,11 +109,13 @@ const Chat: React.FC = () => {
         <Rooms />
       </Drawer>
 
-      <main className={classes.content + ' ' + (open ? classes.contentShift : '')}>
+      <main
+        className={classes.content + ' ' + (open ? classes.contentShift : '')}
+      >
         <Messages />
       </main>
     </div>
   );
-}
+};
 
 export default Chat;

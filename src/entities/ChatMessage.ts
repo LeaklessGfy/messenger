@@ -7,4 +7,4 @@ export interface ChatMessage {
   isPrivate: boolean;
 }
 
-export type PartialChatMessage = Omit<ChatMessage, 'id' | 'owner' | 'room'>
+export type PartialChatMessage = Omit<ChatMessage, 'id' | 'owner' | 'room'>;

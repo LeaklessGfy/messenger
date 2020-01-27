@@ -1,4 +1,4 @@
-import { ChatRoom } from "../entities/ChatRoom";
+import { ChatRoom } from '../entities/ChatRoom';
 
 export const CHAT_ROOMS_MOCK: ChatRoom[] = [
   {
@@ -6,13 +6,13 @@ export const CHAT_ROOMS_MOCK: ChatRoom[] = [
     uri: 'all',
     name: 'All',
     date: new Date(),
-    image: ''
+    users: []
   },
   {
     id: 2,
     uri: 'kanye',
     name: 'Kanye West',
     date: new Date(),
-    image: ''
+    users: []
   }
 ];

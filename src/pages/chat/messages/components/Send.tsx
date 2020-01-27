@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -22,24 +23,24 @@ interface SendProps {
   onSend: (message: PartialChatMessage) => void;
 }
 
-const Send: React.FC<SendProps> = props => {
+const Send: React.FC<SendProps> = ({ onSend }) => {
   const classes = useStyles();
-  const [ content, setContent ] = useState('');
-  const [ isPrivate, setIsPrivate ] = useState(false);
+  const [content, setContent] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
 
-  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.keyCode === 13 && content.trim() !== '') {
-      onClick();
-    }
-  };
-
-  const onClick = () => {
-    props.onSend({
+  const onClick = (): void => {
+    onSend({
       content,
       date: new Date(),
       isPrivate
     });
     setContent('');
+  };
+
+  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (e.keyCode === 13 && content.trim() !== '') {
+      onClick();
+    }
   };
 
   return (
@@ -48,7 +49,7 @@ const Send: React.FC<SendProps> = props => {
       className={classes.send}
       variant="outlined"
       value={content}
-      onChange={e => setContent(e.target.value)}
+      onChange={(e): void => setContent(e.target.value)}
       onKeyUp={onEnter}
       InputProps={{
         startAdornment: (
@@ -63,7 +64,7 @@ const Send: React.FC<SendProps> = props => {
               value="checkedA"
               title="Private message"
               inputProps={{ 'aria-label': 'secondary checkbox' }}
-              onClick={() => setIsPrivate(!isPrivate)}
+              onClick={(): void => setIsPrivate(!isPrivate)}
             />
             <IconButton title="Send" onClick={onClick}>
               <SendIcon />
@@ -73,6 +74,10 @@ const Send: React.FC<SendProps> = props => {
       }}
     />
   );
-}
+};
+
+Send.propTypes = {
+  onSend: PropTypes.func.isRequired
+};
 
 export default Send;

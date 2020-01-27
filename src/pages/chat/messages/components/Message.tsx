@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -44,15 +45,35 @@ const Message: React.FC<MessageProps> = props => {
   return (
     <>
       {!props.isOwned ? <Avatar>K</Avatar> : null}
-      <Card className={classes.card + ' ' + (props.isOwned ? classes.cardOwned : '')}>
+      <Card
+        className={
+          classes.card + ' ' + (props.isOwned ? classes.cardOwned : '')
+        }
+      >
         <CardContent className={classes.cardContent}>
-          <Typography variant="body2" component="p" className={props.message.isPrivate ? classes.typoPrivate : ''}>
+          <Typography
+            variant="body2"
+            component="p"
+            className={props.message.isPrivate ? classes.typoPrivate : ''}
+          >
             {props.message.content}
           </Typography>
         </CardContent>
       </Card>
     </>
   );
-}
+};
+
+Message.propTypes = {
+  message: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    owner: PropTypes.number.isRequired,
+    room: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    date: PropTypes.instanceOf(Date).isRequired,
+    isPrivate: PropTypes.bool.isRequired
+  }).isRequired,
+  isOwned: PropTypes.bool.isRequired
+};
 
 export default Message;

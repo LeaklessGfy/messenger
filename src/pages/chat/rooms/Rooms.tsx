@@ -14,23 +14,26 @@ import { fetchChatRooms } from '../../../services/api';
 import Room from './components/Room';
 
 const Rooms: React.FC = () => {
-  const [ rooms, setRooms ] = useState<ChatRoom[]>([]);
-  const [ visibleRooms, setVisibleRooms ] = useState<ChatRoom[]>([]);
+  const [rooms, setRooms] = useState<ChatRoom[]>([]);
+  const [visibleRooms, setVisibleRooms] = useState<ChatRoom[]>([]);
 
-  const onSearch = (token: string) => {
+  const onSearch = (token: string): void => {
     if (token.trim() === '') {
       setVisibleRooms(rooms);
     } else {
-      setVisibleRooms(rooms.filter(room => room.name.toLowerCase().indexOf(token.toLowerCase()) !== -1));
+      setVisibleRooms(
+        rooms.filter(
+          room => room.name.toLowerCase().indexOf(token.toLowerCase()) !== -1
+        )
+      );
     }
   };
 
   useEffect(() => {
-    fetchChatRooms()
-      .then(rooms => {
-        setRooms(rooms);
-        setVisibleRooms(rooms);
-      });
+    fetchChatRooms().then(rooms => {
+      setRooms(rooms);
+      setVisibleRooms(rooms);
+    });
   }, []);
 
   return (
@@ -38,9 +41,7 @@ const Rooms: React.FC = () => {
       component="nav"
       subheader={
         <>
-          <ListSubheader component="div">
-            Chats
-          </ListSubheader>
+          <ListSubheader component="div">Chats</ListSubheader>
           <TextField
             variant="outlined"
             label="Search"
@@ -68,6 +69,6 @@ const Rooms: React.FC = () => {
       ))}
     </List>
   );
-}
+};
 
 export default Rooms;

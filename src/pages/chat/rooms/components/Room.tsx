@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -11,24 +12,34 @@ import { ChatRoom } from '../../../../entities/ChatRoom';
 import { Link } from '@material-ui/core';
 
 interface RoomProps {
-  room: ChatRoom
+  room: ChatRoom;
 }
 
-const Room: React.FC<RoomProps> = props => {
+const Room: React.FC<RoomProps> = ({ room }) => {
   const { uri } = useParams();
 
   return (
-    <Link href={'#/chat/' + props.room.uri} color="inherit" underline="none">
-      <ListItem button selected={props.room.uri === uri}>
+    <Link href={'#/chat/' + room.uri} color="inherit" underline="none">
+      <ListItem button selected={room.uri === uri}>
         <ListItemAvatar>
           <Avatar>
             <ImageIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={props.room.name} secondary={props.room.date.toUTCString()} />
+        <ListItemText primary={room.name} secondary={room.date.toUTCString()} />
       </ListItem>
     </Link>
   );
-}
+};
+
+Room.propTypes = {
+  room: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    uri: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    date: PropTypes.instanceOf(Date).isRequired,
+    users: PropTypes.array.isRequired
+  }).isRequired
+};
 
 export default Room;

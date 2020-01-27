@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ChatMessage, PartialChatMessage } from '../../../entities/ChatMessage';
+import { ChatMessage, PartialChatMessage } from '../../../entities/ChatMessage';
 import { fetchChatMessages, sendChatMessage } from '../../../services/api';
 import { useAuth } from '../../../services/auth';
 
@@ -26,11 +26,11 @@ const useStyles = makeStyles({
 
 const Messages: React.FC = () => {
   const { uri } = useParams();
-  const [ messages, setMessages ] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const { userId } = useAuth();
   const classes = useStyles();
-  
-  const onSend = (partial: PartialChatMessage) => {
+
+  const onSend = (partial: PartialChatMessage): void => {
     if (uri === undefined) return;
 
     const message: ChatMessage = {
@@ -40,8 +40,7 @@ const Messages: React.FC = () => {
       room: uri
     };
 
-    sendChatMessage(message)
-    .then(messages => setMessages(messages));
+    sendChatMessage(message).then(messages => setMessages(messages));
   };
 
   useEffect(() => {
@@ -49,15 +48,21 @@ const Messages: React.FC = () => {
       return; // redirect;
     }
 
-    fetchChatMessages(uri)
-    .then(messages => setMessages(messages));
+    fetchChatMessages(uri).then(messages => setMessages(messages));
   }, [uri]);
 
   return (
     <>
       <ul className={classes.ul}>
         {messages.map(message => (
-          <li key={message.id} className={classes.li + ' ' + (message.owner === userId ? classes.liOwned : '')}>
+          <li
+            key={message.id}
+            className={
+              classes.li +
+              ' ' +
+              (message.owner === userId ? classes.liOwned : '')
+            }
+          >
             <Message message={message} isOwned={message.owner === userId} />
           </li>
         ))}
@@ -66,6 +71,6 @@ const Messages: React.FC = () => {
       <Send onSend={onSend} />
     </>
   );
-}
+};
 
 export default Messages;
