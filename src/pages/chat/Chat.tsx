@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,6 +10,14 @@ import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
+
+import { ChatRoom } from '../../entities/ChatRoom';
+import { ChatMessage, PartialChatMessage } from '../../entities/ChatMessage';
+import {
+  fetchChatRooms,
+  fetchChatMessages,
+  sendChatMessage
+} from '../../services/api';
 
 import Rooms from './rooms/Rooms';
 import Messages from './messages/Messages';
@@ -67,6 +76,29 @@ const useStyles = makeStyles(theme => ({
 const Chat: React.FC = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
+  const [rooms, setRooms] = useState<ChatRoom[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { uri } = useParams();
+
+  const onSend = (partial: PartialChatMessage): void => {
+    if (uri === undefined) return;
+
+    const message: ChatMessage = {
+      ...partial,
+      id: messages.length + 1,
+      owner: userId,
+      room: uri
+    };
+
+    sendChatMessage(message).then(messages => setMessages(messages));
+  };
+
+  useEffect(() => {
+    fetchChatRooms().then(rooms => setRooms(rooms));
+    if (uri !== undefined) {
+      fetchChatMessages(uri).then(messages => setMessages(messages));
+    }
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -106,13 +138,13 @@ const Chat: React.FC = () => {
 
         <Divider />
 
-        <Rooms />
+        <Rooms rooms={rooms} />
       </Drawer>
 
       <main
         className={classes.content + ' ' + (open ? classes.contentShift : '')}
       >
-        <Messages />
+        <Messages messages={messages} onSend={onSend} />
       </main>
     </div>
   );

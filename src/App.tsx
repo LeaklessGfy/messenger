@@ -10,7 +10,7 @@ const App: React.FC = () => {
       <CssBaseline />
 
       <Switch>
-        <Route path="/chat/:uri">
+        <Route path="/chat/:uri" exact>
           <Chat />
         </Route>
       </Switch>

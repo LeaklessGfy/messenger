@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ChatMessage, PartialChatMessage } from '../../../entities/ChatMessage';
-import { fetchChatMessages, sendChatMessage } from '../../../services/api';
 import { useAuth } from '../../../services/auth';
 
 import Message from './components/Message';
@@ -24,32 +23,14 @@ const useStyles = makeStyles({
   }
 });
 
-const Messages: React.FC = () => {
-  const { uri } = useParams();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+interface MessagesProps {
+  messages: ChatMessage[];
+  onSend: (partial: PartialChatMessage) => void;
+}
+
+const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
   const { userId } = useAuth();
   const classes = useStyles();
-
-  const onSend = (partial: PartialChatMessage): void => {
-    if (uri === undefined) return;
-
-    const message: ChatMessage = {
-      ...partial,
-      id: messages.length + 1,
-      owner: userId,
-      room: uri
-    };
-
-    sendChatMessage(message).then(messages => setMessages(messages));
-  };
-
-  useEffect(() => {
-    if (uri === undefined) {
-      return; // redirect;
-    }
-
-    fetchChatMessages(uri).then(messages => setMessages(messages));
-  }, [uri]);
 
   return (
     <>
@@ -71,6 +52,11 @@ const Messages: React.FC = () => {
       <Send onSend={onSend} />
     </>
   );
+};
+
+Messages.propTypes = {
+  messages: PropTypes.array.isRequired,
+  onSend: PropTypes.func.isRequired
 };
 
 export default Messages;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import List from '@material-ui/core/List';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -9,12 +10,14 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcron from '@material-ui/icons/Search';
 
 import { ChatRoom } from '../../../entities/ChatRoom';
-import { fetchChatRooms } from '../../../services/api';
 
 import Room from './components/Room';
 
-const Rooms: React.FC = () => {
-  const [rooms, setRooms] = useState<ChatRoom[]>([]);
+interface RoomsProps {
+  rooms: ChatRoom[];
+}
+
+const Rooms: React.FC<RoomsProps> = ({ rooms }) => {
   const [visibleRooms, setVisibleRooms] = useState<ChatRoom[]>([]);
 
   const onSearch = (token: string): void => {
@@ -29,12 +32,7 @@ const Rooms: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchChatRooms().then(rooms => {
-      setRooms(rooms);
-      setVisibleRooms(rooms);
-    });
-  }, []);
+  useEffect(() => setVisibleRooms(rooms), []);
 
   return (
     <List
@@ -69,6 +67,10 @@ const Rooms: React.FC = () => {
       ))}
     </List>
   );
+};
+
+Rooms.propTypes = {
+  rooms: PropTypes.array.isRequired
 };
 
 export default Rooms;
