@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ChatMessage, PartialChatMessage } from '../../../entities/ChatMessage';
-import { useAuth } from '../../../services/auth';
+import { AuthContext } from '../../../services/auth';
 
 import Message from './components/Message';
 import Send from './components/Send';
@@ -29,7 +29,7 @@ interface MessagesProps {
 }
 
 const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
-  const { userId } = useAuth();
+  const { userId } = useContext(AuthContext);
   const classes = useStyles();
 
   return (

@@ -18,6 +18,7 @@ import {
   fetchChatMessages,
   sendChatMessage
 } from '../../services/api';
+import { AuthContext } from '../../services/auth';
 
 import Rooms from './rooms/Rooms';
 import Messages from './messages/Messages';
@@ -78,6 +79,7 @@ const Chat: React.FC = () => {
   const [open, setOpen] = useState(true);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [userId, setUserId] = useState(1);
   const { uri } = useParams();
 
   const onSend = (partial: PartialChatMessage): void => {
@@ -101,52 +103,54 @@ const Chat: React.FC = () => {
   }, []);
 
   return (
-    <div className={classes.root}>
-      <AppBar
-        position="fixed"
-        color="secondary"
-        className={classes.appBar + ' ' + (open ? classes.appBarShift : '')}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={(): void => setOpen(true)}
-            edge="start"
-            className={classes.menuButton + ' ' + (open ? classes.hide : '')}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Chat
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <AuthContext.Provider value={{ userId }}>
+      <div className={classes.root}>
+        <AppBar
+          position="fixed"
+          color="secondary"
+          className={classes.appBar + ' ' + (open ? classes.appBarShift : '')}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={(): void => setOpen(true)}
+              edge="start"
+              className={classes.menuButton + ' ' + (open ? classes.hide : '')}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              Chat
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{ paper: classes.drawerPaper }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={(): void => setOpen(false)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          classes={{ paper: classes.drawerPaper }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={(): void => setOpen(false)}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
 
-        <Divider />
+          <Divider />
 
-        <Rooms rooms={rooms} />
-      </Drawer>
+          <Rooms rooms={rooms} />
+        </Drawer>
 
-      <main
-        className={classes.content + ' ' + (open ? classes.contentShift : '')}
-      >
-        <Messages messages={messages} onSend={onSend} />
-      </main>
-    </div>
+        <main
+          className={classes.content + ' ' + (open ? classes.contentShift : '')}
+        >
+          <Messages messages={messages} onSend={onSend} />
+        </main>
+      </div>
+    </AuthContext.Provider>
   );
 };
 
