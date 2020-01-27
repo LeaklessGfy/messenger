@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -106,7 +107,7 @@ const Chat: React.FC = () => {
       <AppBar
         position="fixed"
         color="secondary"
-        className={classes.appBar + ' ' + (open ? classes.appBarShift : '')}
+        className={clsx(classes.appBar, open && classes.appBarShift)}
       >
         <Toolbar>
           <IconButton
@@ -114,7 +115,7 @@ const Chat: React.FC = () => {
             aria-label="open drawer"
             onClick={(): void => setOpen(true)}
             edge="start"
-            className={classes.menuButton + ' ' + (open ? classes.hide : '')}
+            className={clsx(classes.menuButton, open && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
@@ -143,9 +144,7 @@ const Chat: React.FC = () => {
         <Rooms rooms={rooms} />
       </Drawer>
 
-      <main
-        className={classes.content + ' ' + (open ? classes.contentShift : '')}
-      >
+      <main className={clsx(classes.content, open && classes.contentShift)}>
         <Messages messages={messages} onSend={onSend} />
       </main>
     </div>

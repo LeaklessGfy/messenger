@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -39,24 +40,20 @@ interface MessageProps {
   isOwned: boolean;
 }
 
-const Message: React.FC<MessageProps> = props => {
+const Message: React.FC<MessageProps> = ({ isOwned, message }) => {
   const classes = useStyles();
 
   return (
     <>
-      {!props.isOwned ? <Avatar>K</Avatar> : null}
-      <Card
-        className={
-          classes.card + ' ' + (props.isOwned ? classes.cardOwned : '')
-        }
-      >
+      {!isOwned ? <Avatar>K</Avatar> : null}
+      <Card className={clsx(classes.card, isOwned && classes.cardOwned)}>
         <CardContent className={classes.cardContent}>
           <Typography
             variant="body2"
             component="p"
-            className={props.message.isPrivate ? classes.typoPrivate : ''}
+            className={message.isPrivate ? classes.typoPrivate : ''}
           >
-            {props.message.content}
+            {message.content}
           </Typography>
         </CardContent>
       </Card>

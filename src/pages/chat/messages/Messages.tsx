@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -44,11 +45,10 @@ const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
         {messages.map(message => (
           <li
             key={message.id}
-            className={
-              classes.li +
-              ' ' +
-              (message.owner === userId ? classes.liOwned : '')
-            }
+            className={clsx(
+              classes.li,
+              message.owner === userId && classes.liOwned
+            )}
           >
             <Message message={message} isOwned={message.owner === userId} />
           </li>
