@@ -13,10 +13,10 @@ export const fetchChatMessages = async (
   uri: string
 ): Promise<ChatMessage[]> => {
   // await fetch('');
-  const localJson = localStorage.getItem('messages/' + uri);
+  const localJson = localStorage.getItem(`messages/${uri}`);
   if (localJson === null) {
     const mocks = CHAT_MESSAGES_MOCK.filter(m => m.room === uri);
-    localStorage.setItem('messages/' + uri, JSON.stringify(mocks));
+    localStorage.setItem(`messages/${uri}`, JSON.stringify(mocks));
     return mocks;
   }
   return JSON.parse(localJson);
@@ -25,7 +25,7 @@ export const fetchChatMessages = async (
 export const sendChatMessage = async (
   chatMessage: ChatMessage
 ): Promise<ChatMessage[]> => {
-  const localJson = localStorage.getItem('messages/' + chatMessage.room);
+  const localJson = localStorage.getItem(`messages/${chatMessage.room}`);
   let data = [];
   if (localJson === null) {
     data = [chatMessage];
@@ -36,7 +36,7 @@ export const sendChatMessage = async (
 
   // fetchStubMessages
 
-  localStorage.setItem('messages/' + chatMessage.room, JSON.stringify(data));
+  localStorage.setItem(`messages/${chatMessage.room}`, JSON.stringify(data));
   return data;
 };
 

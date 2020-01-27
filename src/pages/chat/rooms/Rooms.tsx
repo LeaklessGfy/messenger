@@ -47,7 +47,7 @@ const Rooms: React.FC = () => {
             label="Search"
             size="small"
             margin="dense"
-            onChange={e => onSearch(e.target.value)}
+            onChange={(e): void => onSearch(e.target.value)}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

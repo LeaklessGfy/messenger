@@ -79,7 +79,7 @@ const Chat: React.FC = () => {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={() => setOpen(true)}
+            onClick={(): void => setOpen(true)}
             edge="start"
             className={classes.menuButton + ' ' + (open ? classes.hide : '')}
           >
@@ -99,7 +99,7 @@ const Chat: React.FC = () => {
         classes={{ paper: classes.drawerPaper }}
       >
         <div className={classes.drawerHeader}>
-          <IconButton onClick={() => setOpen(false)}>
+          <IconButton onClick={(): void => setOpen(false)}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
