@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,21 +11,9 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 
-import { ChatRoom } from '../../entities/ChatRoom';
-import {
-  FullChatMessage,
-  PartialChatMessage
-} from '../../entities/ChatMessage';
-import { useAuth } from '../../services/auth';
-import { useNotification } from '../../services/notification';
-import {
-  sendMessageHelper,
-  fetchRoomsHelper,
-  fetchMessagesHelper
-} from '../../services/utils';
-
 import Rooms from './rooms/Rooms';
 import Messages from './messages/Messages';
+import { useChat } from './chatHooks';
 
 const DRAWER_WIDTH = 240;
 
@@ -81,35 +68,7 @@ const useStyles = makeStyles(theme => ({
 const Chat: React.FC = () => {
   const classes = useStyles();
   const [isOpenBar, setIsOpenBar] = useState(true);
-  const [rooms, setRooms] = useState<ChatRoom[]>([]);
-  const [messages, setMessages] = useState<FullChatMessage[]>([]);
-  const user = useAuth();
-  const { setNotification } = useNotification();
-  const { uri } = useParams();
-
-  const onSend = (partial: PartialChatMessage): void => {
-    if (uri === undefined) return;
-    sendMessageHelper(
-      {
-        ...partial,
-        id: messages.length + 1,
-        owner: user.id,
-        room: uri
-      },
-      rooms,
-      setMessages,
-      setNotification
-    );
-  };
-
-  useEffect(() => {
-    fetchRoomsHelper(setRooms, setNotification);
-  }, [setNotification]);
-
-  useEffect(() => {
-    if (uri === undefined || rooms.length === 0) return;
-    fetchMessagesHelper(uri, rooms, setMessages, setNotification);
-  }, [uri, rooms, setNotification]);
+  const { rooms, messages, onSend } = useChat();
 
   return (
     <div className={classes.root}>
