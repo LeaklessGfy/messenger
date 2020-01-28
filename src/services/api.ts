@@ -17,28 +17,30 @@ export const fetchStubMessage = async (
   id: number,
   uri: string
 ): Promise<ChatMessage> => {
-  const response = await fetch('https://api.kanye.rest');
+  const response = await fetch(
+    uri === 'chuck'
+      ? 'https://api.chucknorris.io/jokes/random'
+      : 'https://api.kanye.rest'
+  );
   const data = await response.json();
 
   return {
     id,
-    owner: 2,
+    owner: -1,
     room: uri,
-    content: data.quote,
+    content: uri === 'chuck' ? data.value : data.quote,
     date: new Date(),
     isPrivate: false
   };
 };
 
 export const fetchChatRooms = async (): Promise<ChatRoom[]> => {
-  // await fetch('https://httpstat.us/200');
   return CHAT_ROOMS_MOCK;
 };
 
 export const fetchChatMessages = async (
   uri: string
 ): Promise<ChatMessage[]> => {
-  // await fetch('');
   const messages = getMessagesFromLocal(uri);
   if (messages === null) {
     const mocks = CHAT_MESSAGES_MOCK.filter(m => m.room === uri);
