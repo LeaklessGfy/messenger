@@ -4,16 +4,20 @@ import { ChatMessage } from '../entities/ChatMessage';
 import { CHAT_ROOMS_MOCK } from '../mocks/ChatRoomsMock';
 import { CHAT_MESSAGES_MOCK } from '../mocks/ChatMessagesMock';
 
-function getMessagesFromLocal(uri: string): ChatMessage[] | null {
+const getMessagesFromLocal = (uri: string): ChatMessage[] | null => {
   const localJson = localStorage.getItem(`messages/${uri}`);
-  if (localJson === null) return null;
+
+  if (localJson === null) {
+    return null;
+  }
+
   return JSON.parse(localJson).map((message: ChatMessage) => ({
     ...message,
     date: new Date(message.date)
   }));
-}
+};
 
-export const fetchStubMessage = async (
+const fetchStubMessage = async (
   id: number,
   uri: string
 ): Promise<ChatMessage> => {
@@ -42,12 +46,19 @@ export const fetchChatMessages = async (
   uri: string
 ): Promise<ChatMessage[]> => {
   const messages = getMessagesFromLocal(uri);
-  if (messages === null) {
-    const mocks = CHAT_MESSAGES_MOCK.filter(m => m.room === uri);
-    localStorage.setItem(`messages/${uri}`, JSON.stringify(mocks));
-    return mocks;
+
+  if (messages !== null) {
+    return messages;
   }
-  return messages;
+
+  if (!CHAT_ROOMS_MOCK.some(room => room.uri === uri)) {
+    throw new Error('Unknown friend');
+  }
+
+  const mocks = CHAT_MESSAGES_MOCK.filter(m => m.room === uri);
+  localStorage.setItem(`messages/${uri}`, JSON.stringify(mocks));
+
+  return mocks;
 };
 
 export const sendChatMessage = async (

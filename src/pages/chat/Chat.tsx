@@ -14,17 +14,16 @@ import Divider from '@material-ui/core/Divider';
 
 import { ChatRoom } from '../../entities/ChatRoom';
 import {
-  ChatMessage,
   FullChatMessage,
   PartialChatMessage
 } from '../../entities/ChatMessage';
-import {
-  fetchChatRooms,
-  fetchChatMessages,
-  sendChatMessage
-} from '../../services/api';
 import { useAuth } from '../../services/auth';
-import { hydrateChatMessage } from '../../services/utils';
+import { useNotification } from '../../services/notification';
+import {
+  sendMessageHelper,
+  fetchRoomsHelper,
+  fetchMessagesHelper
+} from '../../services/utils';
 
 import Rooms from './rooms/Rooms';
 import Messages from './messages/Messages';
@@ -81,54 +80,51 @@ const useStyles = makeStyles(theme => ({
 
 const Chat: React.FC = () => {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
+  const [isOpenBar, setIsOpenBar] = useState(true);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [messages, setMessages] = useState<FullChatMessage[]>([]);
   const user = useAuth();
+  const { setNotification } = useNotification();
   const { uri } = useParams();
 
   const onSend = (partial: PartialChatMessage): void => {
     if (uri === undefined) return;
-
-    const message: ChatMessage = {
-      ...partial,
-      id: messages.length + 1,
-      owner: user.id,
-      room: uri
-    };
-
-    sendChatMessage(message).then(messages => {
-      const fullMessages = messages.map(m => hydrateChatMessage(m, rooms));
-      setMessages(fullMessages);
-    });
+    sendMessageHelper(
+      {
+        ...partial,
+        id: messages.length + 1,
+        owner: user.id,
+        room: uri
+      },
+      rooms,
+      setMessages,
+      setNotification
+    );
   };
 
   useEffect(() => {
-    if (uri === undefined) return;
+    fetchRoomsHelper(setRooms, setNotification);
+  }, [setNotification]);
 
-    Promise.all([fetchChatRooms(), fetchChatMessages(uri)]).then(
-      ([rooms, messages]) => {
-        const fullMessages = messages.map(m => hydrateChatMessage(m, rooms));
-        setRooms(rooms);
-        setMessages(fullMessages);
-      }
-    );
-  }, [uri]);
+  useEffect(() => {
+    if (uri === undefined || rooms.length === 0) return;
+    fetchMessagesHelper(uri, rooms, setMessages, setNotification);
+  }, [uri, rooms, setNotification]);
 
   return (
     <div className={classes.root}>
       <AppBar
         position="fixed"
         color="secondary"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
+        className={clsx(classes.appBar, isOpenBar && classes.appBarShift)}
       >
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={(): void => setOpen(true)}
+            onClick={(): void => setIsOpenBar(true)}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={clsx(classes.menuButton, isOpenBar && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
@@ -143,11 +139,11 @@ const Chat: React.FC = () => {
         variant="persistent"
         anchor="left"
         transitionDuration={1000}
-        open={open}
+        open={isOpenBar}
         classes={{ paper: classes.drawerPaper }}
       >
         <div className={classes.drawerHeader}>
-          <IconButton onClick={(): void => setOpen(false)}>
+          <IconButton onClick={(): void => setIsOpenBar(false)}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
@@ -157,7 +153,9 @@ const Chat: React.FC = () => {
         <Rooms rooms={rooms} />
       </Drawer>
 
-      <main className={clsx(classes.content, open && classes.contentShift)}>
+      <main
+        className={clsx(classes.content, isOpenBar && classes.contentShift)}
+      >
         <Messages messages={messages} onSend={onSend} />
       </main>
     </div>
