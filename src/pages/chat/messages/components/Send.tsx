@@ -4,17 +4,19 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Switch from '@material-ui/core/Switch';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
+import Avatar from '@material-ui/core/Avatar';
 
 import { PartialChatMessage } from '../../../../entities/ChatMessage';
+import { User } from '../../../../entities/User';
 
 interface SendProps {
   onSend: (message: PartialChatMessage) => void;
+  user: User;
 }
 
-const Send: React.FC<SendProps> = ({ onSend }) => {
+const Send: React.FC<SendProps> = ({ onSend, user }) => {
   const [content, setContent] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -43,7 +45,10 @@ const Send: React.FC<SendProps> = ({ onSend }) => {
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <AccountCircle />
+            <Avatar
+              title={user.name}
+              src={`${process.env.PUBLIC_URL}/img/${user.uri}.jpg`}
+            />
           </InputAdornment>
         ),
         endAdornment: (
@@ -66,7 +71,12 @@ const Send: React.FC<SendProps> = ({ onSend }) => {
 };
 
 Send.propTypes = {
-  onSend: PropTypes.func.isRequired
+  onSend: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    uri: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default Send;

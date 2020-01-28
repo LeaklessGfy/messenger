@@ -8,13 +8,15 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 
-import { ChatMessage } from '../../../../entities/ChatMessage';
+import { FullChatMessage } from '../../../../entities/ChatMessage';
+import { User } from '../../../../entities/User';
 
 const useStyles = makeStyles({
   card: {
     maxWidth: '500px',
     height: 'fit-content',
     marginLeft: '5px',
+    marginRight: '5px',
     marginTop: '5px',
     '&:hover': {
       backgroundColor: 'grey'
@@ -36,17 +38,27 @@ const useStyles = makeStyles({
 });
 
 interface MessageProps {
-  message: ChatMessage;
-  isOwned: boolean;
+  message: FullChatMessage;
+  user: User;
 }
 
-const Message: React.FC<MessageProps> = ({ isOwned, message }) => {
+const Message: React.FC<MessageProps> = ({ message, user }) => {
   const classes = useStyles();
 
   return (
     <>
-      {!isOwned ? <Avatar>K</Avatar> : null}
-      <Card className={clsx(classes.card, isOwned && classes.cardOwned)}>
+      {!(user.id === message.owner) ? (
+        <Avatar
+          title={message.room.name}
+          src={`${process.env.PUBLIC_URL}/img/${message.room.uri}.jpg`}
+        />
+      ) : null}
+      <Card
+        className={clsx(
+          classes.card,
+          user.id === message.owner && classes.cardOwned
+        )}
+      >
         <CardContent className={classes.cardContent}>
           <Typography
             variant="body2"
@@ -57,6 +69,12 @@ const Message: React.FC<MessageProps> = ({ isOwned, message }) => {
           </Typography>
         </CardContent>
       </Card>
+      {user.id === message.owner ? (
+        <Avatar
+          title={user.name}
+          src={`${process.env.PUBLIC_URL}/img/${user.uri}.jpg`}
+        />
+      ) : null}
     </>
   );
 };
@@ -65,12 +83,21 @@ Message.propTypes = {
   message: PropTypes.shape({
     id: PropTypes.number.isRequired,
     owner: PropTypes.number.isRequired,
-    room: PropTypes.string.isRequired,
+    room: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      uri: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      date: PropTypes.instanceOf(Date).isRequired
+    }).isRequired,
     content: PropTypes.string.isRequired,
     date: PropTypes.instanceOf(Date).isRequired,
     isPrivate: PropTypes.bool.isRequired
   }).isRequired,
-  isOwned: PropTypes.bool.isRequired
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    uri: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default Message;

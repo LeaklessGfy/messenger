@@ -8,11 +8,15 @@ import { AuthContext } from './services/auth';
 import Chat from './pages/chat/Chat';
 
 const App: React.FC = () => {
-  const [userId] = useState(1);
+  const [user] = useState({
+    id: 1,
+    uri: 'tom',
+    name: 'Tom Ford'
+  });
 
   return (
     <Router>
-      <AuthContext.Provider value={{ userId }}>
+      <AuthContext.Provider value={user}>
         <CssBaseline />
 
         <Switch>

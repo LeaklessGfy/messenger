@@ -1,11 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ChatMessage, PartialChatMessage } from '../../../entities/ChatMessage';
-import { AuthContext } from '../../../services/auth';
+import {
+  FullChatMessage,
+  PartialChatMessage
+} from '../../../entities/ChatMessage';
+import { useAuth } from '../../../services/auth';
 
 import Message from './components/Message';
 import Send from './components/Send';
@@ -31,12 +34,12 @@ const useStyles = makeStyles({
 });
 
 interface MessagesProps {
-  messages: ChatMessage[];
+  messages: FullChatMessage[];
   onSend: (partial: PartialChatMessage) => void;
 }
 
 const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
-  const { userId } = useContext(AuthContext);
+  const user = useAuth();
   const classes = useStyles();
 
   return (
@@ -47,15 +50,15 @@ const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
             key={message.id}
             className={clsx(
               classes.li,
-              message.owner === userId && classes.liOwned
+              message.owner === user.id && classes.liOwned
             )}
           >
-            <Message message={message} isOwned={message.owner === userId} />
+            <Message message={message} user={user} />
           </li>
         ))}
       </ul>
 
-      <Send onSend={onSend} />
+      <Send onSend={onSend} user={user} />
     </section>
   );
 };

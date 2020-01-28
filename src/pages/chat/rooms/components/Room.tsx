@@ -6,10 +6,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
+import { Link } from '@material-ui/core';
 
 import { ChatRoom } from '../../../../entities/ChatRoom';
-import { Link } from '@material-ui/core';
 
 interface RoomProps {
   room: ChatRoom;
@@ -22,9 +21,7 @@ const Room: React.FC<RoomProps> = ({ room }) => {
     <Link href={'#/chat/' + room.uri} color="inherit" underline="none">
       <ListItem button selected={room.uri === uri}>
         <ListItemAvatar>
-          <Avatar>
-            <ImageIcon />
-          </Avatar>
+          <Avatar src={`${process.env.PUBLIC_URL}/img/${room.uri}.jpg`} />
         </ListItemAvatar>
         <ListItemText primary={room.name} secondary={room.date.toUTCString()} />
       </ListItem>
@@ -37,8 +34,7 @@ Room.propTypes = {
     id: PropTypes.number.isRequired,
     uri: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    date: PropTypes.instanceOf(Date).isRequired,
-    users: PropTypes.array.isRequired
+    date: PropTypes.instanceOf(Date).isRequired
   }).isRequired
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import clsx from 'clsx';
 
@@ -13,13 +13,18 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 
 import { ChatRoom } from '../../entities/ChatRoom';
-import { ChatMessage, PartialChatMessage } from '../../entities/ChatMessage';
+import {
+  ChatMessage,
+  FullChatMessage,
+  PartialChatMessage
+} from '../../entities/ChatMessage';
 import {
   fetchChatRooms,
   fetchChatMessages,
   sendChatMessage
 } from '../../services/api';
-import { AuthContext } from '../../services/auth';
+import { useAuth } from '../../services/auth';
+import { hydrateChatMessage } from '../../services/utils';
 
 import Rooms from './rooms/Rooms';
 import Messages from './messages/Messages';
@@ -78,8 +83,8 @@ const Chat: React.FC = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const { userId } = useContext(AuthContext);
+  const [messages, setMessages] = useState<FullChatMessage[]>([]);
+  const user = useAuth();
   const { uri } = useParams();
 
   const onSend = (partial: PartialChatMessage): void => {
@@ -88,18 +93,26 @@ const Chat: React.FC = () => {
     const message: ChatMessage = {
       ...partial,
       id: messages.length + 1,
-      owner: userId,
+      owner: user.id,
       room: uri
     };
 
-    sendChatMessage(message).then(messages => setMessages(messages));
+    sendChatMessage(message).then(messages => {
+      const fullMessages = messages.map(m => hydrateChatMessage(m, rooms));
+      setMessages(fullMessages);
+    });
   };
 
   useEffect(() => {
-    fetchChatRooms().then(rooms => setRooms(rooms));
-    if (uri !== undefined) {
-      fetchChatMessages(uri).then(messages => setMessages(messages));
-    }
+    if (uri === undefined) return;
+
+    Promise.all([fetchChatRooms(), fetchChatMessages(uri)]).then(
+      ([rooms, messages]) => {
+        const fullMessages = messages.map(m => hydrateChatMessage(m, rooms));
+        setRooms(rooms);
+        setMessages(fullMessages);
+      }
+    );
   }, [uri]);
 
   return (
