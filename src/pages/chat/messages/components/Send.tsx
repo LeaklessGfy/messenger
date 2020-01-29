@@ -53,9 +53,7 @@ const Send: React.FC<SendProps> = ({ send, user }) => {
             <InputAdornment position="end">
               <Switch
                 checked={isPrivate}
-                value="checkedA"
                 title="Private message"
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
                 onClick={(): void => setIsPrivate(!isPrivate)}
               />
               <IconButton title="Send" onClick={onSubmit}>

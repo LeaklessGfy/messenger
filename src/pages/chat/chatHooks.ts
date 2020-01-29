@@ -14,7 +14,7 @@ import {
   fetchChatRooms,
   fetchChatMessages
 } from '../../services/api';
-import { hydrateMessage } from '../../services/utils';
+import { hydrateMessages } from '../../services/utils';
 
 interface ChatHook {
   rooms: ChatRoom[];
@@ -39,7 +39,7 @@ export const useChat = (): ChatHook => {
       room: uri
     })
       .then(messages => {
-        setMessages(hydrateMessage(rooms, messages, uri));
+        setMessages(hydrateMessages(rooms, messages, uri));
       })
       .catch(err => {
         setNotification({
@@ -68,7 +68,7 @@ export const useChat = (): ChatHook => {
 
     fetchChatMessages(uri)
       .then(messages => {
-        setMessages(hydrateMessage(rooms, messages, uri));
+        setMessages(hydrateMessages(rooms, messages, uri));
       })
       .catch(err => {
         setNotification({

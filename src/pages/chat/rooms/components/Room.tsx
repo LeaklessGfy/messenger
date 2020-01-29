@@ -1,5 +1,4 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -12,11 +11,10 @@ import { ChatRoom } from '../../../../entities/ChatRoom';
 
 interface RoomProps {
   room: ChatRoom;
+  uri: string | undefined;
 }
 
-const Room: React.FC<RoomProps> = ({ room }) => {
-  const { uri } = useParams();
-
+const Room: React.FC<RoomProps> = ({ room, uri }) => {
   return (
     <Link href={'#/chat/' + room.uri} color="inherit" underline="none">
       <ListItem button selected={room.uri === uri}>
@@ -35,7 +33,8 @@ Room.propTypes = {
     uri: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     date: PropTypes.instanceOf(Date).isRequired
-  }).isRequired
+  }).isRequired,
+  uri: PropTypes.string
 };
 
 export default Room;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import List from '@material-ui/core/List';
@@ -17,6 +18,7 @@ interface RoomsProps {
 }
 
 const Rooms: React.FC<RoomsProps> = ({ rooms }) => {
+  const { uri } = useParams();
   const [visibleRooms, setVisibleRooms] = useState<ChatRoom[]>([]);
 
   const onSearch = (token: string): void => {
@@ -57,7 +59,7 @@ const Rooms: React.FC<RoomsProps> = ({ rooms }) => {
     >
       {visibleRooms.map(room => (
         <div key={room.id}>
-          <Room room={room} />
+          <Room room={room} uri={uri} />
           <Divider variant="middle" component="li" />
         </div>
       ))}

@@ -1,7 +1,7 @@
 import { ChatMessage, FullChatMessage } from '../entities/ChatMessage';
 import { ChatRoom } from '../entities/ChatRoom';
 
-export const hydrateMessage = (
+export const hydrateMessages = (
   rooms: ChatRoom[],
   messages: ChatMessage[],
   uri: string

@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import Message from './Message';
 
-test('renders content', () => {
+test('renders content correctly', () => {
   const message = {
     id: 1,
     owner: 1,
