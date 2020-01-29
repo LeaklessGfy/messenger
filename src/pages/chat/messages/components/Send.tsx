@@ -12,16 +12,20 @@ import { PartialChatMessage } from '../../../../entities/ChatMessage';
 import { User } from '../../../../entities/User';
 
 interface SendProps {
-  onSend: (message: PartialChatMessage) => void;
+  send: (message: PartialChatMessage) => void;
   user: User;
 }
 
-const Send: React.FC<SendProps> = ({ onSend, user }) => {
+const Send: React.FC<SendProps> = ({ send, user }) => {
   const [content, setContent] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
-  const onClick = (): void => {
-    onSend({
+  const onSubmit = (e: React.SyntheticEvent): void => {
+    e.preventDefault();
+    if (content.trim() === '') {
+      return;
+    }
+    send({
       content,
       date: new Date(),
       isPrivate
@@ -29,49 +33,44 @@ const Send: React.FC<SendProps> = ({ onSend, user }) => {
     setContent('');
   };
 
-  const onEnter = (e: React.KeyboardEvent<HTMLDivElement>): void => {
-    if (e.keyCode === 13 && content.trim() !== '') {
-      onClick();
-    }
-  };
-
   return (
-    <TextField
-      fullWidth
-      variant="outlined"
-      value={content}
-      onChange={(e): void => setContent(e.target.value)}
-      onKeyUp={onEnter}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Avatar
-              title={user.name}
-              src={`${process.env.PUBLIC_URL}/img/${user.uri}.jpg`}
-            />
-          </InputAdornment>
-        ),
-        endAdornment: (
-          <InputAdornment position="end">
-            <Switch
-              checked={isPrivate}
-              value="checkedA"
-              title="Private message"
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
-              onClick={(): void => setIsPrivate(!isPrivate)}
-            />
-            <IconButton title="Send" onClick={onClick}>
-              <SendIcon />
-            </IconButton>
-          </InputAdornment>
-        )
-      }}
-    />
+    <form onSubmit={(e): void => onSubmit(e)}>
+      <TextField
+        fullWidth
+        variant="outlined"
+        value={content}
+        onChange={(e): void => setContent(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Avatar
+                title={user.name}
+                src={`${process.env.PUBLIC_URL}/img/${user.uri}.jpg`}
+              />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <Switch
+                checked={isPrivate}
+                value="checkedA"
+                title="Private message"
+                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                onClick={(): void => setIsPrivate(!isPrivate)}
+              />
+              <IconButton title="Send" onClick={onSubmit}>
+                <SendIcon />
+              </IconButton>
+            </InputAdornment>
+          )
+        }}
+      />
+    </form>
   );
 };
 
 Send.propTypes = {
-  onSend: PropTypes.func.isRequired,
+  send: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     uri: PropTypes.string.isRequired,

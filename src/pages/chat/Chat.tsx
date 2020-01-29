@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
 const Chat: React.FC = () => {
   const classes = useStyles();
   const [isOpenBar, setIsOpenBar] = useState(true);
-  const { rooms, messages, onSend } = useChat();
+  const { rooms, messages, send } = useChat();
 
   return (
     <div className={classes.root}>
@@ -115,7 +115,7 @@ const Chat: React.FC = () => {
       <main
         className={clsx(classes.content, isOpenBar && classes.contentShift)}
       >
-        <Messages messages={messages} onSend={onSend} />
+        <Messages messages={messages} send={send} />
       </main>
     </div>
   );

@@ -19,7 +19,7 @@ import { hydrateMessage } from '../../services/utils';
 interface ChatHook {
   rooms: ChatRoom[];
   messages: FullChatMessage[];
-  onSend: (partial: PartialChatMessage) => void;
+  send: (partial: PartialChatMessage) => void;
 }
 
 export const useChat = (): ChatHook => {
@@ -29,7 +29,7 @@ export const useChat = (): ChatHook => {
   const { setNotification } = useNotification();
   const { uri } = useParams();
 
-  const onSend = (partial: PartialChatMessage): void => {
+  const send = (partial: PartialChatMessage): void => {
     if (uri === undefined) return;
 
     sendChatMessage({
@@ -39,8 +39,7 @@ export const useChat = (): ChatHook => {
       room: uri
     })
       .then(messages => {
-        const fullMessages = messages.map(m => hydrateMessage(m, rooms));
-        setMessages(fullMessages);
+        setMessages(hydrateMessage(rooms, messages, uri));
       })
       .catch(err => {
         setNotification({
@@ -69,8 +68,7 @@ export const useChat = (): ChatHook => {
 
     fetchChatMessages(uri)
       .then(messages => {
-        const fullMessages = messages.map(m => hydrateMessage(m, rooms));
-        setMessages(fullMessages);
+        setMessages(hydrateMessage(rooms, messages, uri));
       })
       .catch(err => {
         setNotification({
@@ -83,6 +81,6 @@ export const useChat = (): ChatHook => {
   return {
     rooms,
     messages,
-    onSend
+    send
   };
 };

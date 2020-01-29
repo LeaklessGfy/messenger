@@ -35,10 +35,10 @@ const useStyles = makeStyles({
 
 interface MessagesProps {
   messages: FullChatMessage[];
-  onSend: (partial: PartialChatMessage) => void;
+  send: (partial: PartialChatMessage) => void;
 }
 
-const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
+const Messages: React.FC<MessagesProps> = ({ messages, send }) => {
   const user = useAuth();
   const classes = useStyles();
 
@@ -58,14 +58,14 @@ const Messages: React.FC<MessagesProps> = ({ messages, onSend }) => {
         ))}
       </ul>
 
-      <Send onSend={onSend} user={user} />
+      <Send send={send} user={user} />
     </section>
   );
 };
 
 Messages.propTypes = {
   messages: PropTypes.array.isRequired,
-  onSend: PropTypes.func.isRequired
+  send: PropTypes.func.isRequired
 };
 
 export default Messages;
